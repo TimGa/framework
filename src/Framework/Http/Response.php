@@ -2,12 +2,14 @@
 
 namespace Framework\Http;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Description of Response
  *
  * @author timofey
  */
-class Response
+class Response implements ResponseInterface
 {
     private $body;
     private $statusCode;
@@ -30,7 +32,7 @@ class Response
         return $this->body;
     }
     
-    public function setBody($body): self
+    public function withBody($body): self
     {
         $newResponse = clone $this;
         $newResponse->body = $body;
@@ -42,7 +44,7 @@ class Response
         return $this->statusCode;
     }
     
-    public function setStatus(int $code, string $phrase = ''): self
+    public function withStatus($code, $phrase = '')
     {
         $newResponse = clone $this;
         $newResponse->statusCode = $code;
@@ -64,23 +66,30 @@ class Response
         return $this->reasonPhrase;
     }
     
-    public function hasHeader(string $name): bool
+    public function hasHeader($name): bool
     {
         return isset($this->headers[$name]);
     }
     
-    public function getHeader(string $name): ?string
+    public function getHeader($name): ?array
     {
         return $this->hasHeader($name) ? $this->headers[$name] : null;
     }
     
-    public function setHeader(string $name, string $value): self
+    public function withHeader($name, $value): self
     {
         $newResponse = clone $this;
         if ($newResponse->hasHeader($name)) {
             unset($newResponse->headers[$name]);
         }
-        $newResponse->headers[$name] = $value;
+        $newResponse->headers[$name] = is_array($value) ? $value : [$value];
         return $newResponse;
     }
+    
+    public function getHeaderLine($name){}
+    public function getProtocolVersion(){}
+    public function withAddedHeader($name, $value){}
+    public function withProtocolVersion($version){}
+    public function withoutHeader($name){}
+    
 }

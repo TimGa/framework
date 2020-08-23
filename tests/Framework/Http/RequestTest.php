@@ -27,7 +27,7 @@ class RequestTest extends TestCase
             'age' => 30,
         ];
       
-        $request = (new Request())->setQueryParams($queryParams);
+        $request = (new Request())->withQueryParams($queryParams);
         
         self::assertEquals($queryParams, $request->getQueryParams());
         self::assertEquals([], $request->getParsedBody());
@@ -39,7 +39,7 @@ class RequestTest extends TestCase
             'test_post_field' => 'test_post_field_data',
         ];
         
-        $request = (new Request())->setParsedBody($parsedBody);
+        $request = (new Request())->withParsedBody($parsedBody);
         
         self::assertEquals([], $request->getQueryParams());
         self::assertEquals($parsedBody, $request->getParsedBody());

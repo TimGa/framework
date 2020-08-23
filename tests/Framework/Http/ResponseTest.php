@@ -34,16 +34,16 @@ class ResponseTest extends TestCase
     public function testHeaders(): void
     {
         $response = (new Response())
-            ->setHeader('X-Header-1', 'h1')
-            ->setHeader($name1 = 'X-Header-2', $value1 = 'h2')
-            ->setHeader($name2 = 'X-Header-1', $value2 = 'replaced-h1');
+            ->withHeader('X-Header-1', 'h1')
+            ->withHeader($name1 = 'X-Header-2', $value1 = 'h2')
+            ->withHeader($name2 = 'X-Header-1', $value2 = 'replaced-h1');
         $expected = [
-            'X-Header-2' => 'h2',
-            'X-Header-1' => 'replaced-h1',
+            'X-Header-2' => ['h2'],
+            'X-Header-1' => ['replaced-h1'],
         ];
         self::assertEquals($expected, $response->getHeaders());
-        self::assertEquals($value1, $response->getHeader($name1));
-        self::assertEquals($value2, $response->getHeader($name2));
+        self::assertEquals([$value1], $response->getHeader($name1));
+        self::assertEquals([$value2], $response->getHeader($name2));
         self::assertNull($response->getHeader('notexists'));
     }
 }
