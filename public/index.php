@@ -2,6 +2,7 @@
 
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
 chdir(dirname(__DIR__));
 require_once 'vendor/autoload.php';
@@ -18,8 +19,5 @@ $response = (new Response())
 
 $response->getBody()->write($body);
 
-header('HTTP/1.1 ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
-foreach ($response->getHeaders() as $name => $values) {
-    header($name . ': ' . implode(', ', $values));
-}
-echo $response->getBody();
+$emitter = new SapiEmitter();
+$emitter->emit($response);
