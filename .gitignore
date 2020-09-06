@@ -1,3 +1,4 @@
 /vendor
 /phpunit.xml
 /nbproject
+.phpunit.result.cache
