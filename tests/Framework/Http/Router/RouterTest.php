@@ -3,7 +3,7 @@
 namespace Tests\Framework\Http\Router;
 
 use PHPUnit\Framework\TestCase;
-use Framework\Http\Router\RoutesCollection;
+use Framework\Http\Router\RouteCollection;
 use Framework\Http\Router\Router;
 use Framework\Http\Router\Exception\RequestNotMachedException;
 use Laminas\Diactoros\ServerRequest;
@@ -18,7 +18,7 @@ class RouterTest extends TestCase
 {
     public function testCorrectMethod()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('get_note', '/note', 'handler_for_get');
         $routes->post('edit_note', '/note', 'handler_for_post');
         
@@ -30,12 +30,12 @@ class RouterTest extends TestCase
         
         $result = $router->match($this->buildRequest('POST', '/note'));
         self::assertEquals('edit_note', $result->getName());
-        self::assertEquals('handler_for_get', $result->getHandler());
+        self::assertEquals('handler_for_post', $result->getHandler());
     }
     
     public function testMissingRouteMethod()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('get_note', '/note', 'handler_for_get');
         
         $router = new Router($routes);
@@ -46,7 +46,7 @@ class RouterTest extends TestCase
     
     public function testCorrectAttributes()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('get_note', '/note/{id}', 'handler', ['id' => '\d+']);
         
         $router = new Router($routes);
@@ -59,7 +59,7 @@ class RouterTest extends TestCase
     
     public function testIncorrectAtributes()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('get_note', '/note/{id}', 'handler', ['id' => '\d+']);
         
         $router = new Router($routes);
@@ -70,7 +70,7 @@ class RouterTest extends TestCase
     
     public function testGenerate()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('note_index', '/note', 'index_handler');
         $routes->get('note_show', '/note/{id}', 'show_handler', ['id' => '\d+']);
         
@@ -82,7 +82,7 @@ class RouterTest extends TestCase
     
     public function testGenerateInvalidArguments()
     {
-        $routes = new RoutesCollection();
+        $routes = new RouteCollection();
         $routes->get('note_show', '/note/{id}', 'show_handler', ['id' => '\d+']);
         
         $router = new Router($routes);
@@ -93,7 +93,8 @@ class RouterTest extends TestCase
     
     private function buildRequest($method, $path)
     {
-        $request = new ServerRequest();
-        $request->withMethod($method)->withUri(new Uri($uri));
+        return (new ServerRequest())
+            ->withUri(new Uri($path))
+            ->withMethod($method);
     }
 }
